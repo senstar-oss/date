@@ -81,18 +81,18 @@ target_sources( date INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>/date/julian.h
 )
 
-set(TARGET_HEADERS
-    include/date/date.h
-    include/date/solar_hijri.h
-    include/date/islamic.h
-    include/date/iso_week.h
-    include/date/julian.h
-)
-
-if (CMAKE_VERSION VERSION_GREATER_EQUAL 3.15)
-    # public headers will get installed:
-    set_target_properties( date PROPERTIES PUBLIC_HEADER "${TARGET_HEADERS}" )
-endif ()
+## set(TARGET_HEADERS
+##     include/date/date.h
+##     include/date/solar_hijri.h
+##     include/date/islamic.h
+##     include/date/iso_week.h
+##     include/date/julian.h
+## )
+## 
+## if (CMAKE_VERSION VERSION_GREATER_EQUAL 3.15)
+##     # public headers will get installed:
+##     set_target_properties( date PROPERTIES PUBLIC_HEADER "${TARGET_HEADERS}" )
+## endif ()
 
 # These used to be set with generator expressions,
 #
@@ -163,7 +163,7 @@ if( BUILD_TZ_LIB )
     endif( )
     set_target_properties( date-tz PROPERTIES
         POSITION_INDEPENDENT_CODE ON
-        PUBLIC_HEADER "${TZ_HEADERS}"
+##        PUBLIC_HEADER "${TZ_HEADERS}"
         VERSION "${PROJECT_VERSION}"
         SOVERSION "${ABI_VERSION}" )
     if( NOT MSVC )
@@ -189,30 +189,35 @@ if( ENABLE_DATE_INSTALL )
       COMPATIBILITY SameMajorVersion )
 
   install( TARGETS date
-      EXPORT dateConfig
-      PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/date )
+      EXPORT dateConfig )
+##      PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/date )
   export( TARGETS date NAMESPACE date:: FILE dateTargets.cmake )
-  if (CMAKE_VERSION VERSION_LESS 3.15)
-      install(
-          FILES ${TARGET_HEADERS}
-          DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/date )
-  endif ()
+##  if (CMAKE_VERSION VERSION_LESS 3.15)
+##      install(
+##          FILES ${TARGET_HEADERS}
+##          DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/date )
+##  endif ()
+install(
+    DIRECTORY "${CMAKE_SOURCE_DIR}/include/date"
+    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+    PATTERN "chrono_io.h" EXCLUDE
+)
 
   if( BUILD_TZ_LIB )
       install( TARGETS date-tz
           EXPORT dateConfig
-          PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/date
+##          PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/date
           ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
           LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
           RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} )  # This is for Windows
       export( TARGETS date-tz NAMESPACE date:: APPEND FILE dateTargets.cmake )
   endif( )
 
-  if( WIN32 AND NOT CYGWIN)
-      set( CONFIG_LOC CMake )
-  else( )
+  ## if( WIN32 AND NOT CYGWIN)
+  ##    set( CONFIG_LOC CMake )
+  ## else( )
       set( CONFIG_LOC "${CMAKE_INSTALL_LIBDIR}/cmake/date" )
-  endif( )
+  ## endif( )
   install( EXPORT dateConfig
     FILE dateTargets.cmake
     NAMESPACE date::
