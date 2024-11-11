@@ -152,8 +152,8 @@ if( BUILD_TZ_LIB )
       target_compile_definitions( date-tz PUBLIC USE_OS_TZDB=0 )
     endif()
 
-    if ( WIN32 )
-      target_compile_definitions( date-tz PUBLIC DATE_BUILD_DLL=0 )
+    if ( WIN32 AND BUILD_SHARED_LIBS )
+      target_compile_definitions( date-tz PUBLIC DATE_BUILD_DLL=1 )
     endif()
 
     set(TZ_HEADERS include/date/tz.h)
@@ -166,7 +166,6 @@ if( BUILD_TZ_LIB )
 ##        PUBLIC_HEADER "${TZ_HEADERS}"
         VERSION "${PROJECT_VERSION}"
         SOVERSION "${ABI_VERSION}" )
-        STATIC_LIBRARY_FLAGS "static"
     if( NOT MSVC )
         find_package( Threads )
         target_link_libraries( date-tz PUBLIC Threads::Threads )
